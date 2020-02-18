@@ -269,7 +269,8 @@ class ShapefileReader extends Shapefile implements \Iterator
         if ($this->isBigEndianMachine()) {
             $ret = strrev($ret);
         }
-        return current(unpack('d', $ret));
+        // intentional @ - some files may be corrupted at the end, we don't want to throw error.
+        return @current(@unpack('d', $ret));
     }
     
     /**
@@ -908,7 +909,9 @@ class ShapefileReader extends Shapefile implements \Iterator
                 ];
             }
             if ($i < 0) {
-                throw new ShapefileException(Shapefile::ERR_GEOM_POLYGON_NOT_VALID);
+                // skip not valid polygon but read the rest of the file anyway.
+                continue;
+                //throw new ShapefileException(Shapefile::ERR_GEOM_POLYGON_NOT_VALID);
             }
             if ($this->getOption(Shapefile::OPTION_INVERT_POLYGONS_ORIENTATION)) {
                 $rawpart['points'] = array_reverse($rawpart['points']);
