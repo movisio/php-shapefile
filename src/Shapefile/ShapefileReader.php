@@ -71,7 +71,7 @@ class ShapefileReader extends Shapefile implements \Iterator
      * @var int     SHP file size in bytes (used when SHX file is not available).
      */
     private $shp_file_size;
-    
+
     /**
      * @var int     Pointer to current SHP and DBF files record.
      */
@@ -99,7 +99,7 @@ class ShapefileReader extends Shapefile implements \Iterator
                 Shapefile::OPTION_POLYGON_OUTPUT_ORIENTATION => $options[Shapefile::OPTION_INVERT_POLYGONS_ORIENTATION] ? Shapefile::ORIENTATION_COUNTERCLOCKWISE : Shapefile::ORIENTATION_CLOCKWISE,
             ], $options);
         }
-        
+
         // Options
         $this->initOptions([
             Shapefile::OPTION_DBF_ALLOW_FIELD_SIZE_255,
@@ -133,7 +133,7 @@ class ShapefileReader extends Shapefile implements \Iterator
         // SHP
         $this->shp_file_size = $this->getFileSize(Shapefile::FILE_SHP);
         $this->readSHPHeader();
-        
+
         // DBF and DBT
         if (!$this->getOption(Shapefile::OPTION_IGNORE_FILE_DBF)) {
             // DBF file size
@@ -308,7 +308,8 @@ class ShapefileReader extends Shapefile implements \Iterator
         if ($this->isBigEndianMachine()) {
             $ret = strrev($ret);
         }
-        return current(unpack('d', $ret));
+        // intentional @ - some files may be corrupted at the end, we don't want to throw error.
+        return @current(@unpack('d', $ret));
     }
     
     /**
@@ -371,7 +372,7 @@ class ShapefileReader extends Shapefile implements \Iterator
             }
             $this->setCustomBoundingBox($bounding_box);
         }
-        
+
         // Set SHP file pointer to first record
         $this->setFilePointer(Shapefile::FILE_SHP, Shapefile::SHP_HEADER_SIZE);
         return $this;
@@ -420,7 +421,7 @@ class ShapefileReader extends Shapefile implements \Iterator
         if ($this->readChar(Shapefile::FILE_DBF) !== Shapefile::DBF_FIELD_TERMINATOR) {
             throw new ShapefileException(Shapefile::ERR_DBF_FILE_NOT_VALID);
         }
-        
+
         return $this;
     }
     
@@ -462,7 +463,7 @@ class ShapefileReader extends Shapefile implements \Iterator
         if ($this->getOption(Shapefile::OPTION_IGNORE_FILE_SHX)) {
             $this->setFilePointer(Shapefile::FILE_SHP, $shp_offset + $content_length);
         }
-        
+
         // === DBF ===
         if (!$this->getOption(Shapefile::OPTION_IGNORE_FILE_DBF)) {
             $dbf_file_position = $this->dbf_header_size + (($this->current_record - 1) * $this->dbf_record_size);
