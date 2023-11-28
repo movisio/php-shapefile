@@ -5,7 +5,7 @@
  *
  * @package Shapefile
  * @author  Gaspare Sganga
- * @version 3.5.0dev
+ * @version 4.0.0dev
  * @license MIT
  * @link    https://gasparesganga.com/labs/php-shapefile/
  */
@@ -67,7 +67,7 @@ class ShapefileWriter extends Shapefile
     /**
      * Constructor.
      *
-     * @param   string|array    $files      Path to SHP file / Array of paths / Array of handles of individual files.
+     * @param   string|array    $files      Path to SHP file / Array of paths / Array of resource handles / Array of FileInterface instances.
      * @param   array           $options    Optional associative array of options.
      */
     public function __construct($files, $options = [])
@@ -960,12 +960,12 @@ class ShapefileWriter extends Shapefile
                     // Try YYYY-MM-DD format
                     $DateTime   = \DateTime::createFromFormat('Y-m-d', $value);
                     $errors     = \DateTime::getLastErrors();
-                    if ($errors['warning_count'] || $errors['error_count']) {
+                    if (is_array($errors) && ($errors['warning_count'] || $errors['error_count'])) {
                         // Try YYYYMMDD format
                         $DateTime   = \DateTime::createFromFormat('Ymd', $value);
                         $errors     = \DateTime::getLastErrors();
                     }
-                    if ($errors['warning_count'] || $errors['error_count']) {
+                    if (is_array($errors) && ($errors['warning_count'] || $errors['error_count'])) {
                         $value = $this->getOption(Shapefile::OPTION_DBF_NULLIFY_INVALID_DATES) ? null : $this->truncateOrPadString($this->sanitizeNumber($value), $size);
                     } else {
                         $value = $DateTime->format('Ymd');

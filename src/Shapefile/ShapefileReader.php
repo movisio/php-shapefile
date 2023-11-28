@@ -5,7 +5,7 @@
  *
  * @package Shapefile
  * @author  Gaspare Sganga
- * @version 3.5.0dev
+ * @version 4.0.0dev
  * @license MIT
  * @link    https://gasparesganga.com/labs/php-shapefile/
  */
@@ -84,7 +84,7 @@ class ShapefileReader extends Shapefile implements \Iterator
     /**
      * Constructor.
      *
-     * @param   string|array    $files      Path to SHP file / Array of paths / Array of handles of individual files.
+     * @param   string|array    $files      Path to SHP file / Array of paths / Array of resource handles / Array of FileInterface instances.
      * @param   array           $options    Optional associative array of options.
      */
     public function __construct($files, $options = [])
@@ -172,6 +172,7 @@ class ShapefileReader extends Shapefile implements \Iterator
     public function rewind(): void
     {
         $this->current_record = 0;
+        $this->setFilePointer(Shapefile::FILE_SHP, Shapefile::SHP_HEADER_SIZE);
         $this->next();
     }
 
@@ -523,7 +524,7 @@ class ShapefileReader extends Shapefile implements \Iterator
                 case Shapefile::DBF_TYPE_DATE:
                     $DateTime   = \DateTime::createFromFormat('Ymd', $value);
                     $errors     = \DateTime::getLastErrors();
-                    if ($errors) {
+                    if (is_array($errors) && ($errors['warning_count'] || $errors['error_count'])) {
                         $value = $this->getOption(Shapefile::OPTION_DBF_NULLIFY_INVALID_DATES) ? null : $value;
                     } elseif ($this->getOption(Shapefile::OPTION_DBF_RETURN_DATES_AS_OBJECTS)) {
                         $DateTime->setTime(0, 0, 0);

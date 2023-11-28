@@ -5,7 +5,7 @@
  *
  * @package Shapefile
  * @author  Gaspare Sganga
- * @version 3.5.0dev
+ * @version 4.0.0dev
  * @license MIT
  * @link    https://gasparesganga.com/labs/php-shapefile/
  */
@@ -15,7 +15,7 @@ namespace Shapefile\File;
 /**
  * Interface to interact with files in binary mode.
  */
-interface File
+interface FileInterface
 {
     /**
      * Returns true if file is readable.

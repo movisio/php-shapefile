@@ -5,7 +5,7 @@
  *
  * @package Shapefile
  * @author  Gaspare Sganga
- * @version 3.5.0dev
+ * @version 4.0.0dev
  * @license MIT
  * @link    https://gasparesganga.com/labs/php-shapefile/
  */
@@ -16,11 +16,11 @@ use Shapefile\Shapefile;
 use Shapefile\ShapefileException;
 
 /**
- * Default File implementation.
+ * Default FileInterface implementation.
  * It allows reading/writing of files in binary mode.
  * It accepts both filepaths and stream resource handles.
  */
-class StreamResourceFile implements File
+class StreamResourceFile implements FileInterface
 {
     /////////////////////////////// PRIVATE VARIABLES ///////////////////////////////
     /**
