@@ -311,7 +311,11 @@ class ShapefileReader extends Shapefile implements \Iterator
             $ret = strrev($ret);
         }
         // intentional @ - some files may be corrupted at the end, we don't want to throw error.
-        return @current(@unpack('d', $ret));
+        $d = @unpack('d', $ret);
+        if (is_array($d) && count($d)) {
+            return current($d);
+        }
+        return false;
     }
 
     /**
