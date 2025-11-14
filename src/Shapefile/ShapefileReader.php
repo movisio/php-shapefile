@@ -12,6 +12,7 @@
 
 namespace Shapefile;
 
+use Shapefile\Geometry\Geometry;
 use Shapefile\Geometry\Point;
 use Shapefile\Geometry\MultiPoint;
 use Shapefile\Geometry\Linestring;
@@ -168,14 +169,20 @@ class ShapefileReader extends Shapefile implements \Iterator
     }
     
     
-    public function rewind()
+    /**
+     * @return void
+     */
+    public function rewind() : void
     {
         $this->current_record = 0;
         $this->setFilePointer(Shapefile::FILE_SHP, Shapefile::SHP_HEADER_SIZE);
         $this->next();
     }
     
-    public function next()
+    /**
+     * @return void
+     */
+    public function next() : void
     {
         ++$this->current_record;
         if (($this->getTotRecords() !== Shapefile::UNKNOWN && !$this->checkRecordIndex($this->current_record)) || $this->getFilePointer(Shapefile::FILE_SHP) >= $this->shp_file_size) {
@@ -183,17 +190,27 @@ class ShapefileReader extends Shapefile implements \Iterator
         }
     }
     
-    public function current()
+    /**
+     * @return false|Geometry
+     * @throws ShapefileException
+     */
+    public function current() : false|Geometry
     {
         return $this->readCurrentRecord();
     }
 
-    public function key()
+    /**
+     * @return int
+     */
+    public function key() : int
     {
         return $this->current_record;
     }
 
-    public function valid()
+    /**
+     * @return bool
+     */
+    public function valid() : bool
     {
         return ($this->current_record !== Shapefile::EOF);
     }
